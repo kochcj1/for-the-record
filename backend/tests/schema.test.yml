@@ -1,0 +1,48 @@
+groups:
+  - name: Project 1
+    tables:
+      - name: Products
+        fields:
+          - name: Name
+            type: string
+          - name: Cost
+            type: double
+          - name: Quantity in stock
+            type: integer
+      - name: Users
+        fields:
+          - name: Email
+            type: string
+            required: true
+          - name: Encrypted password
+            type: string
+            required: true
+          - name: Premium user?
+            type: boolean
+          - name: Favorite Interest
+            type: enumeration
+            options:
+              - Soccer
+              - Chess
+              - Racquetball
+              - Reading
+              - Long walks on the beach
+              - Other
+  - name: Project 2
+    tables:
+      - name: Items
+        fields:
+          - name: Some string
+            type: string
+          - name: Some integer
+            type: integer
+          - name: Some double
+            type: double
+          - name: Some boolean
+            type: boolean
+          - name: Some enumeration
+            type: enumeration
+            options:
+              - Thing one
+              - Thing two
+              - Thing three
