@@ -9,6 +9,10 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
+// TODO:
+// - Consolidate integer and double text field code b/c it's almost identical
+// - Fix the fact that the integer text field still allows doubles
+
 export default function SchemaField({ propertyName, propertyInfo, required }) {
   if (propertyInfo.bsonType === "string") {
     return (

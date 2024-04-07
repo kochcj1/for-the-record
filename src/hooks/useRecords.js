@@ -7,7 +7,7 @@ const fetchRecords = async (baseUrl, group, table) => {
 
 const useRecords = (baseUrl, group, table) => {
   const { isLoading, isError, error, isSuccess, data } = useQuery(
-    "records",
+    `${group}/${table}/records`,
     () => fetchRecords(baseUrl, group, table)
   );
   return {

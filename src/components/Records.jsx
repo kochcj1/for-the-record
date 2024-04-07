@@ -14,6 +14,8 @@ import {
 import { Add } from "@mui/icons-material";
 import SchemaForm from "./SchemaForm";
 
+// TODO: populate table based on schema and records
+
 export default function Records({ group, table }) {
   const { isLoading, isError, error, isSuccess, data } = useRecords(
     SERVER_BASE_URL,
