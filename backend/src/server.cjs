@@ -1,10 +1,12 @@
-const express = require("express");
+const cors = require("cors");
 const multer = require("multer");
+const express = require("express");
 const { MongoClient } = require("mongodb");
-const { group } = require("console");
 const getHealth = require("./routes/getHealth.cjs");
 const postSchema = require("./routes/postSchema.cjs");
 const getGroups = require("./routes/getGroups.cjs");
+const postRecord = require("./routes/postRecord.cjs");
+const getRecords = require("./routes/getRecords.cjs");
 const {
   SERVER_PORT,
   MONGO_URL,
@@ -15,6 +17,8 @@ const {
 // TODO:
 // - Use middleware to connect to MongoDB once (ensure that disconnect happens automatically when the server shuts down)
 // - Move routes into their own files
+// - Access log
+// - Only use JSON and other middleware where needed?
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -33,31 +37,12 @@ app.post("/api/schemas", upload.single("file"), (req, res) =>
 );
 
 // A route that can be used to retreive all groups and their corresponding tables.
-app.get("/api/groups", (_req, res) => getGroups(mongoClient, res));
+app.get("/api/groups", cors(), (_req, res) => getGroups(mongoClient, res));
 
 // A route that can be used to add a record to a given table.
-app.post("/api/:group/:table/records", async (req, res) => {
-  try {
-    await mongoClient.connect();
-    const db = mongoClient.db(DATABASE_NAME);
-    const collectionName = `${req.params.group}${GROUP_TABLE_SEPARATOR}${req.params.table}`;
-    const collection = db.collection(collectionName);
-    const result = await collection.insertOne(req.body);
-    if (result.acknowledged) {
-      res.status(201).send({
-        message: "Record added successfully",
-        recordId: result.insertedId,
-      });
-    } else {
-      res.status(400).send("Failed to add record");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred");
-  } finally {
-    await mongoClient.close();
-  }
-});
+app.post("/api/:group/:table/records", cors(), (req, res) =>
+  postRecord(req, mongoClient, res)
+);
 
 // A route that can be used to update an existing record.
 app.put("/api/:group/:table/records/:recordId", async (req, res) => {
@@ -84,22 +69,9 @@ app.put("/api/:group/:table/records/:recordId", async (req, res) => {
 });
 
 // A route that can be used to retrieve a given table's records.
-app.get("/api/:group/:table/records", async (req, res) => {
-  try {
-    await mongoClient.connect();
-    const db = mongoClient.db(DATABASE_NAME);
-    const collectionName = `${req.params.group}${GROUP_TABLE_SEPARATOR}${req.params.table}`;
-    const collection = db.collection(collectionName);
-    const query = { isArchived: { $ne: true } }; // exclude archived records
-    const records = await collection.find(query).toArray();
-    res.status(200).json(records);
-  } catch (error) {
-    console.error("Error fetching records:", error);
-    res.status(500).send("An error occurred while fetching records.");
-  } finally {
-    await mongoClient.close();
-  }
-});
+app.get("/api/:group/:table/records", cors(), (req, res) =>
+  getRecords(req, mongoClient, res)
+);
 
 // A route that can be used to delete an existing record.
 app.delete("/api/:group/:table/records/:recordId", async (req, res) => {
