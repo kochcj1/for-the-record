@@ -15,6 +15,7 @@ import {
 export default function SchemaField({
   propertyName,
   propertyInfo,
+  defaultValue,
   required,
   onChange,
 }) {
@@ -23,6 +24,7 @@ export default function SchemaField({
       <TextField
         label={propertyName}
         helperText={propertyInfo.description}
+        defaultValue={defaultValue}
         required={required}
         variant="outlined"
         margin="dense"
@@ -36,6 +38,7 @@ export default function SchemaField({
       <NumericField
         label={propertyName}
         helperText={propertyInfo.description}
+        defaultValue={defaultValue}
         required={required}
         minimum={propertyInfo.minimum}
         maximum={propertyInfo.maximum}
@@ -53,6 +56,7 @@ export default function SchemaField({
       <NumericField
         label={propertyName}
         helperText={propertyInfo.description}
+        defaultValue={defaultValue}
         required={required}
         minimum={propertyInfo.minimum}
         maximum={propertyInfo.maximum}
@@ -65,7 +69,10 @@ export default function SchemaField({
       <FormGroup>
         <FormControlLabel
           control={
-            <Checkbox onChange={(event) => onChange(event.target.checked)} />
+            <Checkbox
+              defaultChecked={defaultValue}
+              onChange={(event) => onChange(event.target.checked)}
+            />
           }
           label={propertyName}
         />
@@ -78,7 +85,7 @@ export default function SchemaField({
         <Select
           label={propertyName}
           labelId={`${propertyName}-label`}
-          defaultValue={propertyInfo.enum[0]}
+          defaultValue={defaultValue || propertyInfo.enum[0]}
           onChange={(event) => onChange(event.target.value)}
         >
           {propertyInfo.enum.map((option) => {
@@ -97,6 +104,7 @@ export default function SchemaField({
 function NumericField({
   label,
   helperText,
+  defaultValue,
   required,
   step,
   minimum,
@@ -108,6 +116,7 @@ function NumericField({
       type="number"
       label={label}
       helperText={helperText}
+      defaultValue={defaultValue}
       required={required}
       InputLabelProps={{
         shrink: true,

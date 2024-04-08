@@ -6,14 +6,14 @@ import useRecords from "../hooks/useRecords";
 import { SERVER_BASE_URL } from "../utils/env";
 import { Button } from "@mui/material";
 import { Add, Delete, Edit } from "@mui/icons-material";
-import RecordDialog from "./RecordDialog";
+import RecordCreationDialog from "./RecordCreationDialog";
+import RecordEditDialog from "./RecordEditDialog";
 import RecordDeletionDialog from "./RecordDeletionDialog";
 import "../styles/records.css";
 
 // TODO: update table right away after record is added, update, or deleted
 // TODO: handle loading and errors (GET, POST, PUT, and DELETE errors)
 // TODO: disable Add button if there are required fields that aren't yet filled out
-// TODO: make records editable
 
 export default function Records({ group, table }) {
   const { isLoading, isError, error, isSuccess, data } = useRecords(
@@ -25,9 +25,10 @@ export default function Records({ group, table }) {
   const propertyNames = Object.keys(schema?.properties || {});
   const records = data?.records || [];
 
-  const [recordDialogOpen, setRecordDialogOpen] = useState(false);
+  const [recordCreationDialogOpen, setRecordCreationDialogOpen] =
+    useState(false);
   const handleAddButtonClick = () => {
-    setRecordDialogOpen(true);
+    setRecordCreationDialogOpen(true);
   };
 
   // The user's filled out the record's form dialog and has requested to add it, so
@@ -44,7 +45,7 @@ export default function Records({ group, table }) {
       });
 
       if (response.ok) {
-        setRecordDialogOpen(false);
+        setRecordCreationDialogOpen(false);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -53,9 +54,33 @@ export default function Records({ group, table }) {
     }
   };
 
-  // TODO
-  const handleEditButtonClick = (recordId) => {
-    console.log(recordId);
+  const [recordToEdit, setRecordToEdit] = useState(undefined);
+  const handleEditButtonClick = (record) => {
+    setRecordToEdit(record);
+  };
+
+  // The user has confirmed that they want to apply their changes to a record, so
+  // tell the backend to update it:
+  const handleRecordEditRequested = async (record) => {
+    const { id, ...rest } = record;
+    const url = `${SERVER_BASE_URL}/api/${group}/${table}/records/${id}`;
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rest),
+      });
+
+      if (response.ok) {
+        setRecordToEdit(undefined);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error updating record:", error);
+    }
   };
 
   const [recordIdToDelete, setRecordIdToDelete] = useState(undefined);
@@ -63,7 +88,7 @@ export default function Records({ group, table }) {
     setRecordIdToDelete(recordId);
   };
 
-  // The user has confimed that they want to delete a record, so tell the backend to
+  // The user has confirmed that they want to delete a record, so tell the backend to
   // delete it:
   const handleRecordDeletionRequested = async (recordId) => {
     const url = `${SERVER_BASE_URL}/api/${group}/${table}/records/${recordId}?soft=true`;
@@ -116,12 +141,20 @@ export default function Records({ group, table }) {
           />
         </React.Fragment>
       )}
-      <RecordDialog
-        open={recordDialogOpen}
-        setOpen={setRecordDialogOpen}
+      <RecordCreationDialog
+        open={recordCreationDialogOpen}
+        setOpen={setRecordCreationDialogOpen}
         schema={schema}
         onNewRecordRequested={handleNewRecordRequested}
       />
+      {recordToEdit && (
+        <RecordEditDialog
+          recordToEdit={recordToEdit}
+          setRecordToEdit={setRecordToEdit}
+          schema={schema}
+          onRecordEditRequested={handleRecordEditRequested}
+        />
+      )}
       <RecordDeletionDialog
         recordIdToDelete={recordIdToDelete}
         setRecordIdToDelete={setRecordIdToDelete}
@@ -145,7 +178,7 @@ function getColumns(propertyNames, onEditButtonClick, onDeleteButtonClick) {
         <GridActionsCellItem
           icon={<Edit />}
           label="Edit"
-          onClick={() => onEditButtonClick(params.id)}
+          onClick={() => onEditButtonClick(params.row)}
         />,
         <GridActionsCellItem
           icon={<Delete />}

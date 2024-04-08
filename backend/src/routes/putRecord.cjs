@@ -1,3 +1,4 @@
+const { ObjectId } = require("bson");
 const { DATABASE_NAME, GROUP_TABLE_SEPARATOR } = require("../env.cjs");
 
 const putRecord = async (req, mongoClient, res) => {

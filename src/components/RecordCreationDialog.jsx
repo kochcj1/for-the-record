@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import SchemaForm from "./SchemaForm";
 
-export default function RecordDialog({
+export default function RecordCreationDialog({
   open,
   setOpen,
   schema,
