@@ -11,10 +11,6 @@ import RecordEditDialog from "./RecordEditDialog";
 import RecordDeletionDialog from "./RecordDeletionDialog";
 import "../styles/records.css";
 
-// TODO: update table right away after record is added, update, or deleted
-// TODO: handle loading and errors (GET, POST, PUT, and DELETE errors)
-// TODO: disable Add button if there are required fields that aren't yet filled out
-
 export default function Records({ group, table }) {
   const { isLoading, isError, error, isSuccess, data } = useRecords(
     SERVER_BASE_URL,

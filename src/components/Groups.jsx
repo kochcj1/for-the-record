@@ -10,9 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { getTableRoute } from "../utils/routes";
 import "../styles/groups.css";
 
-// TODO: handle loading and errors
-// TODO: prop types
-
 function Groups({ isLoading, isError, error, isSuccess, groups }) {
   const navigate = useNavigate();
   const handleTableClick = (group, table) => {
