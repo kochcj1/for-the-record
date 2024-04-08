@@ -14,7 +14,7 @@ const { SERVER_PORT, MONGO_URL } = require("./env.cjs");
 // TODO:
 // - Use middleware to connect to MongoDB once (ensure that disconnect happens automatically when the server shuts down)
 // - Creation and modification times
-// - Separate frontend and backend dependencies
+// - Separate frontend and backend dependencies (update README.md accordingly)
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
