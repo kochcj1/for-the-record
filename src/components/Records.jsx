@@ -85,6 +85,11 @@ export default function Records({ group, table }) {
       });
 
       if (response.ok) {
+        setRows((previousRows) =>
+          previousRows.map((row) => {
+            return row.id === id ? record : row;
+          })
+        );
         setRecordToEdit(undefined);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -107,6 +112,9 @@ export default function Records({ group, table }) {
       const response = await fetch(url, { method: "DELETE" });
 
       if (response.ok) {
+        setRows((previousRows) =>
+          previousRows.filter((row) => row.id !== recordId)
+        );
         setRecordIdToDelete(undefined);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
