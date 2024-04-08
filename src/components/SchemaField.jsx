@@ -10,66 +10,65 @@ import {
 } from "@mui/material";
 
 // TODO:
-// - Consolidate integer and double text field code b/c it's almost identical
 // - Fix the fact that the integer text field still allows doubles
 
-export default function SchemaField({ propertyName, propertyInfo, required }) {
+export default function SchemaField({
+  propertyName,
+  propertyInfo,
+  required,
+  onChange,
+}) {
   if (propertyInfo.bsonType === "string") {
     return (
       <TextField
-        required={required}
         label={propertyName}
         helperText={propertyInfo.description}
+        required={required}
         variant="outlined"
         margin="dense"
         multiline
         fullWidth
+        onChange={(event) => onChange(event.target.value)}
       />
     );
   } else if (propertyInfo.bsonType === "int") {
     return (
-      <TextField
+      <NumericField
         label={propertyName}
-        type="number"
-        required={required}
         helperText={propertyInfo.description}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-        inputProps={{
-          step: 1,
-          min: propertyInfo.minimum,
-          max: propertyInfo.maximum,
-        }}
-        margin="dense"
-        fullWidth
+        required={required}
+        minimum={propertyInfo.minimum}
+        maximum={propertyInfo.maximum}
+        step={1}
+        onChange={(value) => onChange(parseInt(value))}
       />
     );
-  } else if (propertyInfo.bsonType === "double") {
+  }
+  // For fields that are declared to be doubles, the actual BSON types that are
+  // used when setting up the field's Mongo validation schema are "double" AND "int".
+  // Otherwise, posting an integer to a field that's declared to be only a double,
+  // doesn't work. Therefore, we check here that the field's type *includes* "double":
+  else if (propertyInfo.bsonType?.includes("double")) {
     return (
-      <TextField
+      <NumericField
         label={propertyName}
-        type="number"
-        required={required}
         helperText={propertyInfo.description}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-        inputProps={{
-          step: "any",
-          min: propertyInfo.minimum,
-          max: propertyInfo.maximum,
-        }}
-        margin="dense"
-        fullWidth
+        required={required}
+        minimum={propertyInfo.minimum}
+        maximum={propertyInfo.maximum}
+        step="any"
+        onChange={(value) => onChange(parseFloat(value))}
       />
     );
   } else if (propertyInfo.bsonType === "bool") {
     return (
       <FormGroup>
-        <FormControlLabel control={<Checkbox />} label={propertyName} />
+        <FormControlLabel
+          control={
+            <Checkbox onChange={(event) => onChange(event.target.checked)} />
+          }
+          label={propertyName}
+        />
       </FormGroup>
     );
   } else if (propertyInfo.hasOwnProperty("enum")) {
@@ -77,9 +76,10 @@ export default function SchemaField({ propertyName, propertyInfo, required }) {
       <FormControl required={required} margin="dense" fullWidth>
         <InputLabel id={`${propertyName}-label`}>{propertyName}</InputLabel>
         <Select
-          defaultValue={propertyInfo.enum[0]}
-          labelId={`${propertyName}-label`}
           label={propertyName}
+          labelId={`${propertyName}-label`}
+          defaultValue={propertyInfo.enum[0]}
+          onChange={(event) => onChange(event.target.value)}
         >
           {propertyInfo.enum.map((option) => {
             return (
@@ -92,4 +92,35 @@ export default function SchemaField({ propertyName, propertyInfo, required }) {
       </FormControl>
     );
   }
+}
+
+function NumericField({
+  label,
+  helperText,
+  required,
+  step,
+  minimum,
+  maximum,
+  onChange,
+}) {
+  return (
+    <TextField
+      type="number"
+      label={label}
+      helperText={helperText}
+      required={required}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      inputProps={{
+        step,
+        min: minimum,
+        max: maximum,
+      }}
+      variant="outlined"
+      margin="dense"
+      fullWidth
+      onChange={(event) => onChange(event.target.value)}
+    />
+  );
 }

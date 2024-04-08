@@ -1,7 +1,7 @@
-import * as React from "react";
+import React from "react";
 import SchemaField from "./SchemaField";
 
-export default function SchemaForm({ schema }) {
+export default function SchemaForm({ schema, onSchemaFieldChange }) {
   const properties = schema?.properties;
   const requiredProperties = schema?.required || [];
 
@@ -16,6 +16,9 @@ export default function SchemaForm({ schema }) {
             propertyName={propertyName}
             propertyInfo={propertyInfo}
             required={required}
+            onChange={(propertyValue) =>
+              onSchemaFieldChange(propertyName, propertyValue)
+            }
           />
         );
       })}

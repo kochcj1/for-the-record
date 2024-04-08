@@ -1,5 +1,6 @@
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import { COPYRIGHT_URL } from "../utils/env";
 
 function Copyright(props) {
   return (
@@ -10,7 +11,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://example.com/">
+      <Link color="inherit" href={COPYRIGHT_URL}>
         For the Record
       </Link>{" "}
       {new Date().getFullYear()}

@@ -1,3 +1,5 @@
+const { DATABASE_NAME, GROUP_TABLE_SEPARATOR } = require("../env.cjs");
+
 const postRecords = async (req, mongoClient, res) => {
   try {
     await mongoClient.connect();

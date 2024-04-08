@@ -19,6 +19,7 @@ const {
 // - Move routes into their own files
 // - Access log
 // - Only use JSON and other middleware where needed?
+// - Creation and modification times
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -40,6 +41,7 @@ app.post("/api/schemas", upload.single("file"), (req, res) =>
 app.get("/api/groups", cors(), (_req, res) => getGroups(mongoClient, res));
 
 // A route that can be used to add a record to a given table.
+app.options("/api/:group/:table/records", cors());
 app.post("/api/:group/:table/records", cors(), (req, res) =>
   postRecord(req, mongoClient, res)
 );

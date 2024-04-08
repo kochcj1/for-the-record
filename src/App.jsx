@@ -17,6 +17,7 @@ import Copyright from "./components/Copyright";
 import TableRoutes from "./components/TableRoutes";
 import useGroups from "./hooks/useGroups";
 import { SERVER_BASE_URL } from "./utils/env";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
@@ -26,6 +27,7 @@ export default function App() {
     setOpen(!open);
   };
 
+  const navigate = useNavigate();
   const groupsResponse = useGroups(SERVER_BASE_URL);
 
   return (
@@ -55,7 +57,8 @@ export default function App() {
               variant="h6"
               color="inherit"
               noWrap
-              sx={{ flexGrow: 1 }}
+              sx={{ cursor: "pointer" }}
+              onClick={() => navigate("/")}
             >
               For the Record
             </Typography>
