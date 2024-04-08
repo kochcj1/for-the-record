@@ -9,7 +9,7 @@ The web app will then generate the MongoDB collections and React forms necessary
 - Backend: Express
 - Database: MongoDB
 
-Credit where credit's due: a [free MUI](https://mui.com/material-ui/getting-started/templates/dashboard/) template was
+Credit where credit's due: a [free MUI template](https://mui.com/material-ui/getting-started/templates/dashboard/) was
 used as the starting point for this web app's React frontend
 
 ## Getting started
