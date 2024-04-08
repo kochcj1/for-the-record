@@ -1,6 +1,6 @@
 # For the Record
 
-A generic, record-keeping tool. Use a YML-defined schema to define the fields you care about and their data types.
+A generic, record-keeping tool. Use a YAML-defined schema to define the fields you care about and their data types.
 The web app will then generate the MongoDB collections and React forms necessary to fill in the fields you defined.
 
 ## Stack
@@ -10,8 +10,6 @@ The web app will then generate the MongoDB collections and React forms necessary
 - Database: MongoDB
 
 Credit where credit's due: a free MUI template was used as the starting point for this web app's React frontend
-
-Musi template credit where credits due
 
 ## Getting started
 
