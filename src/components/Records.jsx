@@ -139,24 +139,21 @@ export default function Records({ group, table }) {
         )}
       </div>
       <Subtitle>{table}</Subtitle>
-      {records && records.length > 0 && (
-        <React.Fragment>
-          <DataGrid
-            columns={getColumns(
-              propertyNames,
-              handleEditButtonClick,
-              handleDeleteButtonClick
-            )}
-            rows={rows}
-            density="compact"
-            rowSelection={false}
-            sx={{ marginTop: "1em" }}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : ""
-            }
-          />
-        </React.Fragment>
-      )}
+      <DataGrid
+        columns={getColumns(
+          propertyNames,
+          handleEditButtonClick,
+          handleDeleteButtonClick
+        )}
+        rows={rows}
+        autoHeight
+        density="compact"
+        rowSelection={false}
+        sx={{ marginTop: "1em" }}
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0 ? "even" : ""
+        }
+      />
       <RecordCreationDialog
         open={recordCreationDialogOpen}
         setOpen={setRecordCreationDialogOpen}
