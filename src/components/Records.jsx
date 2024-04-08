@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Title from "./Title";
 import Subtitle from "./Subtitle";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -20,6 +20,15 @@ export default function Records({ group, table }) {
   const schema = data?.schema;
   const propertyNames = Object.keys(schema?.properties || {});
   const records = data?.records || [];
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    setRows(
+      records.map((record) => {
+        const { _id, ...rest } = record;
+        return { id: _id, ...rest };
+      })
+    );
+  }, [data]);
 
   const [recordCreationDialogOpen, setRecordCreationDialogOpen] =
     useState(false);
@@ -41,6 +50,12 @@ export default function Records({ group, table }) {
       });
 
       if (response.ok) {
+        const body = await response.json();
+        const newRow = {
+          ...formState,
+          id: body.recordId,
+        };
+        setRows((previousRows) => [...previousRows, newRow]);
         setRecordCreationDialogOpen(false);
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -124,10 +139,7 @@ export default function Records({ group, table }) {
               handleEditButtonClick,
               handleDeleteButtonClick
             )}
-            rows={records.map((record) => {
-              const { _id, ...rest } = record;
-              return { id: _id, ...rest };
-            })}
+            rows={rows}
             density="compact"
             rowSelection={false}
             sx={{ marginTop: "1em" }}

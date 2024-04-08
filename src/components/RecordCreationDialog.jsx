@@ -49,10 +49,12 @@ const addDefaultState = (schema, state) => {
   const properties = schema?.properties || {};
   Object.entries(properties).forEach((property) => {
     const [propertyName, propertyInfo] = property;
-    if (propertyInfo.bsonType === "bool") {
-      state[propertyName] = false;
-    } else if (propertyInfo.hasOwnProperty("enum")) {
-      state[propertyName] = propertyInfo.enum[0];
+    if (!state.hasOwnProperty(propertyName)) {
+      if (propertyInfo.bsonType === "bool") {
+        state[propertyName] = false;
+      } else if (propertyInfo.hasOwnProperty("enum")) {
+        state[propertyName] = propertyInfo.enum[0];
+      }
     }
   });
 };
