@@ -27,6 +27,12 @@ Run Express-based web service:
 node backend/src/server.cjs
 ```
 
+Perform a health check:
+
+```
+curl localhost:3000/health
+```
+
 Provide a schema:
 
 ```
