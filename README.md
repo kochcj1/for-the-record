@@ -57,7 +57,7 @@ used as the starting point for this web app's React frontend
 1. Run tests:
 
    ```
-   npm run tests
+   npm run test
    ```
 
 ## Schema
